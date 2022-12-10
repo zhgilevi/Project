@@ -23,7 +23,8 @@ public class DemoApplication implements CommandLineRunner {
   public void run(String... args) throws Exception {
     SignUpRequest signUpRequest = new SignUpRequest("test","test_name","test_secondname","1234");
     AppUserController controller = new AppUserController(userService);
-    int code =controller.registrUser(signUpRequest).getCode();
+    int code =controller.getAll().getCode();
+    System.out.println(code);
 
   }
 }

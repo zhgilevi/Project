@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,11 @@ public class AppUserController {
   @PostMapping("/signup")
   public CustomResponse loginUser(@RequestBody LoginRequest loginRequest) {
     return userService.loginUser(loginRequest);
+  }
+
+  @GetMapping("/all")
+  public CustomResponse getAll(){
+    return userService.getAll();
   }
 
 
