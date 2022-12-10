@@ -23,7 +23,7 @@ public class AppUserService {
 
   public CustomResponse createUser(AppUser user) {
 
-    if (userRepository.existsAppUserByUsername(user.getUsername())) {
+    if (userRepository.existsByUsername(user.getUsername())) {
       return new CustomResponse<>(null, CustomStatus.EXCEPTION, null);
     }
 
@@ -33,6 +33,7 @@ public class AppUserService {
 
   public CustomResponse loginUser(LoginRequest loginRequest) {
     AppUser user = userRepository.findAppUserByUsername(loginRequest.getUsername());
+
     if (user == null || user.getPassword().equals(loginRequest.getPassword())) {
       return new CustomResponse(null, CustomStatus.NOT_FOUND, null);
     }

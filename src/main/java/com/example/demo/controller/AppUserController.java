@@ -34,7 +34,9 @@ public class AppUserController {
 
   @PostMapping("/registr")
   public CustomResponse registrUser(@RequestBody SignUpRequest userInfo) {
-    AppUser user = new AppUser();
+    AppUser user = new AppUser(userInfo.getUsername(), userInfo.getFName(),
+        userInfo.getLName(), userInfo.getPassword());
+    System.out.println(userInfo.getFName());
     return userService.createUser(user);
   }
 
