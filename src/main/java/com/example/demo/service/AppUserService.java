@@ -7,14 +7,9 @@ import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
-import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AppUserService {
@@ -28,7 +23,7 @@ public class AppUserService {
 
   public CustomResponse createUser(AppUser user) {
 
-    if (userRepository.existsAppUsersByUsername(user.getUsername())) {
+    if (userRepository.existsAppUserByUsername(user.getUsername())) {
       return new CustomResponse<>(null, CustomStatus.EXCEPTION, null);
     }
 
@@ -37,7 +32,7 @@ public class AppUserService {
   }
 
   public CustomResponse loginUser(LoginRequest loginRequest) {
-    AppUser user = userRepository.findByUsername(loginRequest.getUsername());
+    AppUser user = userRepository.findAppUserByUsername(loginRequest.getUsername());
     if (user == null || user.getPassword().equals(loginRequest.getPassword())) {
       return new CustomResponse(null, CustomStatus.NOT_FOUND, null);
     }
