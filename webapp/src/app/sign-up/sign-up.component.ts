@@ -19,11 +19,11 @@ export class SignUpComponent {
     console.log("Attempting to Register User:", this.user);
     this.userService.register(this.user).subscribe(_result => {
       console.log("Response:", _result);
-      this.gotoHomepage();
+      if (_result.code === 0) {
+        this.router.navigate(['/home'])
+      } else {
+        alert(_result.message);
+      }
     });
-  }
-
-  gotoHomepage() {
-    this.router.navigate(['/home']);
   }
 }

@@ -14,14 +14,21 @@ export class UserService {
   }
 
   public findAll(): Observable<CustomResponse> {
-    return this.http.get<CustomResponse>(`${this.url}/users`);
+    return this.http.get<CustomResponse>(`${this.url}/all`);
   }
 
-  public save(user: User) {
-    return this.http.post<User>(`${this.url}/users`, {
+  public register(user: User) {
+    return this.http.post<CustomResponse>(`${this.url}/registr`, {
       username: user.username,
       fname: user.fname,
       lname: user.lname,
+      password: user.password
+    });
+  }
+
+  public login(user: User) {
+    return this.http.post<CustomResponse>(`${this.url}/signup`, {
+      username: user.username,
       password: user.password
     });
   }
