@@ -7,6 +7,8 @@ import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,13 @@ public class AppUserService {
         new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
             loginRequest.getPassword()));
     return new CustomResponse(null, CustomStatus.SUCCESS, token);
+  }
+
+  public CustomResponse getAll(){
+    ArrayList<AppUser> users = new ArrayList<>();
+    userRepository.findAll().forEach(user -> users.add(user) );
+    return new CustomResponse(users,CustomStatus.SUCCESS,null);
+
   }
 
 
