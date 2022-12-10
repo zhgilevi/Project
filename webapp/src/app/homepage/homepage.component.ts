@@ -1,7 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { CookieService } from 'ngx-cookie-service';
-import { CookieValidation } from '../model/token.validation';
 import { CustomResponse } from '../model/custom.response';
 import { User } from '../model/user';
 
@@ -33,26 +31,16 @@ export class HomepageComponent {
     unread: number;
   }[] = [];
 
-  tokenIsValid: boolean = false;
-
   @ViewChild('scrollable') private myScrollContainer: ElementRef =
     new ElementRef<any>('scrollable');
 
-  constructor(private userService: UserService, private cookieService: CookieService) {
+  constructor(private userService: UserService) {
     this.currentChatID = '';
     this.chatList = {};
   }
 
-  validateToken() {
-    this.userService.tokenValidation().subscribe((res: CookieValidation) => {
-      this.tokenIsValid = res.valid;
-    });
-  }
-
-  ngOnInit() {
+  async ngOnInit() {
     let users: User[] = [];
-    this.validateToken();
-    console.log("Token Valid:", this.tokenIsValid);
     this.userService.findAll().subscribe((data: CustomResponse) => {
       users = data.responseList;
       console.log('Got Response:', users);

@@ -1,19 +1,23 @@
-<div class="card my-5">
-  <div class="card-body">
-    <form (ngSubmit)="onSubmit()" #userForm="ngForm">
-      <div class="form-group">
-        <label for="name">Username</label>
-        <input type="text" [(ngModel)]="user.username" class="form-control" id="username" name="username" placeholder="Enter your name"
-          required #username="ngModel">
-      </div>
-      <div [hidden]="!username.pristine" class="alert alert-danger">Username is required</div>
-      <div class="form-group">
-        <label for="name">Password</label>
-        <input type="text" [(ngModel)]="user.password" class="form-control" id="password" name="password" placeholder="Enter your name"
-          required #password="ngModel">
-      </div>
-      <div [hidden]="!password.pristine" class="alert alert-danger">Password is required</div>
-      <button type="submit" [disabled]="!userForm.form.valid" class="btn btn-primary">Sign In</button>
+<div class="wrapper text-center">
+  <main class="form-signin">
+    <form>
+      <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <input
+          type="email"
+          class="form-control form-floating"
+          id="floatingInput"
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          class="form-control form-floating"
+          id="floatingPassword"
+          placeholder="Password"
+        />
+      <button class="w-100 btn btn-lg btn-primary" type="submit">
+        Sign in
+      </button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
     </form>
-  </div>
+  </main>
 </div>
