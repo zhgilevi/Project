@@ -11,6 +11,10 @@ public class SignUpRequest {
   private String lName;
   private String password;
 
-
-
+  public SignUpRequest(String username, String fName, String lName, String password) {
+    this.username = username;
+    this.fName = fName;
+    this.lName = lName;
+    this.password = password;
+  }
 }
