@@ -1,0 +1,62 @@
+body {
+  margin-top: 20px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  max-height: 65vh;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.py-3 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+.px-4 {
+  padding-right: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+.flex-grow-0 {
+  flex-grow: 0 !important;
+}
+.border-top {
+  border-top: 1px solid #dee2e6 !important;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.scrollable {
+  overflow-y: auto;
+  width: 100%;
+  max-height: 80vh;
+  direction: rtl;
+}
+.scrollable .item {
+  direction: ltr;
+}
+.scrollable::-webkit-scrollbar {
+  width: 3px;
+}
+.scrollable::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: rgb(240, 240, 240);
+}
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgb(222, 222, 222);
+}
