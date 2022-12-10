@@ -24,7 +24,6 @@ public class DemoApplication implements CommandLineRunner {
     SignUpRequest signUpRequest = new SignUpRequest("test","test_name","test_secondname","1234");
     AppUserController controller = new AppUserController(userService);
     int code =controller.registrUser(signUpRequest).getCode();
-    System.out.println(code);
 
   }
 }
