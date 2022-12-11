@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -11,6 +11,7 @@ import { ChatItemComponent } from './chat-item/chat-item.component';
 import { MessageComponent } from './message/message.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -20,15 +21,23 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ChatItemComponent,
     MessageComponent,
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule
-  ],
-  providers: [UserService],
-  bootstrap: [AppComponent]
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
+  providers: [UserService, CookieService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor(private cookieService:CookieService){}
+
+  ngOnInit() {
+    // default values
+    this.cookieService.set('token','');
+    this.cookieService.set('username', '');
+    this.cookieService.set('fname', '');
+    this.cookieService.set('lname', '');
+    this.cookieService.set('id', '');
+    this.cookieService.set('regDate', '');
+  }
+}
