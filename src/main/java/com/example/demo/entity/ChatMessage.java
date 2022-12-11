@@ -24,9 +24,12 @@ public class ChatMessage {
   private Long sender;
   private Long receiver;
 
-  public ChatMessage(String text, Long sender, Long receiver) {
+  private Long chatId;
+
+  public ChatMessage(String text, Long sender, Long receiver, Long chatId) {
     this.text = text;
     this.sender = sender;
     this.receiver = receiver;
+    this.chatId = chatId;
   }
 }
