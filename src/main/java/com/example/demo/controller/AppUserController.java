@@ -4,7 +4,9 @@ import com.example.demo.entity.AppUser;
 import com.example.demo.service.AppUserService;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
+import com.example.demo.util.EntityResponse;
 import com.example.demo.util.LoginRequest;
+import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +53,23 @@ public class AppUserController {
   @GetMapping("/all")
   public CustomResponse getAll(){
     return userService.getAll();
+  }
+
+  @GetMapping("/user/{id}")
+  public CustomResponse getUser(@PathVariable String id){
+    Long userId = Long.parseLong(id);
+    return userService.getUser(userId);
+  }
+
+  @PostMapping("/search")
+  public CustomResponse findUser(
+      @RequestBody SearchRequest request){
+    //token validation
+
+    System.out.println(request.getUsername());
+    return userService.searchUser(request.getUsername());
+
+
   }
 
 
