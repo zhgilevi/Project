@@ -1,0 +1,257 @@
+#%RAML 1.0
+title: Mobile Order API
+baseUri: http://localhost:8080
+version: 1.0
+
+
+/api:
+  /signin:
+    post:
+      queryParameters:
+        username:
+          displayName: username
+          type: string
+          description: user's username
+          required: true
+        password:
+          displayName: password
+          type: string
+          description: user's password
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "data":{
+                           "id":"1",
+                           "username": "test",
+                           "fName": "Mark",
+                           "lName": "Zuckerberg",
+                           "regDate": "2022-12-12"
+
+                  },
+                  "success": true,
+                  "code": 0
+                }
+        403:
+          body:
+            application/json:
+              example:
+                "success": true,
+                "code": 2
+  /signup:
+    post:
+      queryParameters:
+        username:
+          type: string
+          required: true
+        fName:
+          type: string
+          required: true
+        lName:
+          type: string
+          required: true
+        password:
+          type: string
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example:  {
+                "success":true,
+                "code":0
+              }
+        418:
+          description: Username is not unique
+          body:
+            application/json:
+              example:
+                {
+                  "success": false,
+                  "code":2
+                }
+  /all:
+    post:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  data:
+                    [
+                      {
+                        "id": "1",
+                        "username": "test",
+                        "fName": "Mark",
+                        "lName": "Zuckerberg",
+                        "regDate": "2022-12-12"
+                      }
+                    ],
+                  success: true,
+                  code: 0
+
+                }
+  /search:
+    post:
+      queryParameters:
+        username:
+          type: string
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "data":
+                    {
+                      "id": "1",
+                      "username": "test",
+                      "fName": "Mark",
+                      "lName": "Zuckerberg",
+                      "regDate": "2022-12-12"
+                    },
+                  "success": true,
+                  "code": 0
+                }
+        418:
+          description: User not found
+          body:
+            application/json:
+              example:
+                {
+                  "success": false,
+                  "code": 1
+                }
+  /token:
+    post:
+      description: Check if token is valid
+      queryParameters:
+        token:
+          type: string
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "success": true,
+                  "code":0
+                }
+        403:
+          body:
+            application/json:
+              example:
+                {
+                  "success": false,
+                  "code":1
+                }
+
+
+  /chats:
+    post:
+      queryParameters:
+        id:
+          description: users id
+          type: number
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "data":
+                    [
+                      {
+                        "chatId": 2
+                      },
+                      {
+                        "chatId": 7
+                      }
+                    ],
+                  "success": true,
+                  "code": 0
+                }
+
+  /addchat:
+    post:
+      queryParameters:
+        "fUsername":
+          type: string
+        "sUsername":
+          type: string
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "chatId": 1,
+                  "success": true,
+                  "code": 0
+                }
+  /messages:
+    post:
+      description: Get all messages from chat
+      queryParameters:
+        chatId:
+          type: number
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  //coming soon
+                }
+  /update:
+    post:
+      description: Update users info
+      queryParameters:
+        username:
+          type: string
+          required: false
+        fName:
+          type: string
+          required: false
+        lName:
+          type: string
+          required: false
+      responses:
+        200:
+          body:
+            application/json:
+              example:  {
+                "data": {
+                  "id": "1",
+                  "username": "test",
+                  "fName": "Mark",
+                  "lName": "Nezuckerberg",
+                  "regDate": "2022-12-12"
+
+                },
+
+                "success":true,
+                "code":0
+              }
+        418:
+          description: Username is not unique
+          body:
+            application/json:
+              example:
+                {
+                  "success": false,
+                  "code":2
+                }
+
+
+
+
+
+
+
+
