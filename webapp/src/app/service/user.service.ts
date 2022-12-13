@@ -28,6 +28,16 @@ export class UserService {
     });
   }
 
+  public getAllUsers(): Observable<{
+    data: User[];
+    code: number;
+  }> {
+    return this.http.post<{
+      data: User[];
+      code: number;
+    }>(`${this.url}/all`, {});
+  }
+
   public login(user: User): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.url}/signin`, {
       username: user.username,
@@ -35,10 +45,15 @@ export class UserService {
     });
   }
 
-  public validateToken(): Observable<ValidResponse> {
-    return this.http.post<ValidResponse>(`${this.url}/token`, {
+  public validateToken(): boolean {
+    let permission = false;
+    this.http.post<ValidResponse>(`${this.url}/token`, {
+      username: this.cookieServics.get('username'),
       token: this.cookieServics.get('token')
+    }).subscribe(res => {
+      permission = res.code === 0;
     });
+    return permission;
   }
 
   public getUserChats(): Observable<ChatList> {
@@ -64,6 +79,18 @@ export class UserService {
       code: number;
     }>(`${this.url}/addChat`, {
       chatUsers: [username, this.cookieServics.get('username')]
+    });
+  }
+
+  public searchUsers(username: string): Observable<{
+    data: User[];
+    code: number;
+  }> {
+    return this.http.post<{
+      data: User[];
+      code: number;
+    }>(`${this.url}/search`, {
+      username: username
     });
   }
 }

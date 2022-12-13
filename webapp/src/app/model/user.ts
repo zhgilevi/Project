@@ -5,4 +5,5 @@ export class User {
     lname: string = "";
     password: string = "";
     regDate: string = "";
+    status: boolean = false;
 }

@@ -26,9 +26,8 @@ export class SignInComponent {
       console.log('Response:', res);
       switch (res.code) {
         case 0:
-          if (res.token)
-            this.cookieService.set('token', res.token);
           if (res.data) {
+            this.cookieService.set('token', res.data.token);
             this.cookieService.set('username', res.data.username);
             this.cookieService.set('fname', res.data.fName);
             this.cookieService.set('lname', res.data.lName);

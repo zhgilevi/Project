@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { UserService } from '../service/user.service';
 import { User } from '../model/user';
 import { CookieService } from 'ngx-cookie-service';
@@ -11,6 +12,13 @@ import { MessageList } from '../model/message.list';
   styleUrls: ['./homepage.component.css'],
 })
 export class HomepageComponent {
+
+  myWebSocket: WebSocketSubject<{
+    chatId: number;
+    sender: string;
+    content: string;
+  }> = webSocket('ws://localhost:8000'); // fix url
+
   currentChatID: string;
 
   chatList: {
@@ -45,6 +53,16 @@ export class HomepageComponent {
 
 
   ngOnInit() {
+    try {
+      console.log('Token:', this.cookieService.get('token'));
+      console.log('Username:', this.cookieService.get('username'));
+      console.log('First Name:', this.cookieService.get('fname'));
+      console.log('Last Name:', this.cookieService.get('lname'));
+      console.log('ID:', this.cookieService.get('id'));
+    } catch (err) {
+      return;
+    }
+
     this.userService.getUserChats().subscribe((chatList: ChatList) => {
       console.log('Got Response:', chatList);
       this.cookieService.set('currentChatID', '');
@@ -79,6 +97,27 @@ export class HomepageComponent {
       console.log('Selected Chat ID:', this.currentChatID);
       console.log('Generated ChatList:', this.chatList);
     });
+
+    this.myWebSocket.asObservable().subscribe(data => {
+      if (String(data.chatId) in this.chatList) {
+        this.addMessage(String(data.chatId), data.sender, data.content);
+      }
+    });
+  }
+
+  addMessage(id: string, sender: string, content: string) {
+    this.chatList[id].chat.push({
+      chatId: Number(id),
+      sender: sender,
+      content: content
+    });
+    for (const chatItem of this.chatMenu) {
+      if (chatItem.id === id) {
+        chatItem.unread++;
+        chatItem.username = sender;
+        chatItem.message = content;
+      }
+    }
   }
 
   renderChat(id: string) {
@@ -96,7 +135,11 @@ export class HomepageComponent {
   handleSendMessage() {
     const msg = this.yourMessage;
     if (msg.length === 0) return;
-    // do something
+    this.myWebSocket.next({
+      chatId: Number(this.currentChatID),
+      sender: this.cookieService.get('username'),
+      content: msg
+    });
   }
 
   private scrollToBottom(): void {

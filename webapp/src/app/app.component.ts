@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,14 @@ export class AppComponent {
 
   title: string;
 
-  constructor() {
-    this.title = 'Spring Boot - Angular Application';
+  constructor(private cookieService: CookieService) {
+    this.title = 'Our Awsome Messenger';
+    this.cookieService.set('token', '');
+    this.cookieService.set('username', '');
+    this.cookieService.set('fname', '');
+    this.cookieService.set('lname', '');
+    this.cookieService.set('id', '');
+    this.cookieService.set('regDate', '');
+    this.cookieService.set('currentChatID', '');
   }
 }

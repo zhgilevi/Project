@@ -5,8 +5,8 @@ export class LoginResponse {
         fName: string;
         lName: string;
         regDate: string;
+        token: string
     };
-    success?: boolean = false;
+    success?: boolean;
     code?: number;
-    token?: string;
 }
