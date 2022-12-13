@@ -93,10 +93,6 @@ public class AppUserService {
   public Map<String, Object> searchUser(String username, String token) {
     List<AppUser> users = userRepository.usernameContains(username);
     Map<String, Object> respones = new HashMap<>();
-    if(!jwtUtil.validateJwtToken(token)){
-      respones.put("code",3);
-      return respones;
-    }
     if (users == null){
       respones.put("code",1);
       return respones;
