@@ -68,20 +68,16 @@ public class AppUserController {
   @PostMapping("/signin")
   public LoginResponse loginUser(@RequestBody LoginRequest loginRequest) {
 
-    Map<String, String> responseMap = new HashMap<>();
 
-    AppUser user = userService.loginUser(loginRequest);
-    if (user == null){
+
+    Map<String, String> data = userService.loginUser(loginRequest);
+    if (data == null){
       return new LoginResponse(2);
     }
-    responseMap.put("id",Long.toString(user.getId()));
-    responseMap.put("username", user.getUsername());
-    responseMap.put("fName", user.getFName());
-    responseMap.put("lName", user.getLName());
-    responseMap.put("regDate", user.getRegDate().toString());
 
 
-    return new LoginResponse(0, responseMap);
+
+    return new LoginResponse(0, data);
   }
 
   @GetMapping("/all")
