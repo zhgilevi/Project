@@ -14,7 +14,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
   public AppUser findByUsername(String username);
 
-  @Query("SELECT e FROM AppUser e WHERE e.username like concat(:username,'%') ")
+  @Query("SELECT e FROM AppUser e WHERE e.username like concat('%',:username,'%') ")
   public List<AppUser> usernameContains(@Param("username") String username);
 
 
