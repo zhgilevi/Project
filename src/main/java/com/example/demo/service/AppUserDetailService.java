@@ -22,7 +22,7 @@ public class AppUserDetailService implements UserDetails {
 
   public AppUserDetailService( String username,
       String password) {
-    this.username = username;;
+    this.username = username;
     this.password = password;
   }
 

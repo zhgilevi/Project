@@ -2,22 +2,16 @@ package com.example.demo.service;
 
 
 import com.example.demo.entity.AppUser;
-import com.example.demo.payload.AppUserDto;
 import com.example.demo.repository.AppUserRepository;
-import com.example.demo.util.ContainerResponse;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
-import com.example.demo.util.EntityResponse;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +74,7 @@ public class AppUserService {
 
   }
 
-  public CustomResponse getUser(Long id){
+  public CustomResponse<List<AppUser>> getUser(Long id){
     AppUser user = userRepository.findById(id).get();
     List<AppUser> response = new ArrayList<>();
     response.add(user);
