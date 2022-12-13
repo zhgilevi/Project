@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Chat;
+import com.example.demo.entity.ChatMessage;
 import com.example.demo.repository.AppUserRepository;
+import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.repository.ChatRepository;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
+import com.example.demo.util.MessageResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +27,9 @@ public class ChatService {
 
   @Autowired
   private AppUserRepository userRepository;
+
+  @Autowired
+  private ChatMessageRepository messageRepository;
 
   @Autowired
   JwtUtil jwtUtil;
@@ -74,6 +80,18 @@ public class ChatService {
       response.put("code",0);
     }
 
+    return response;
+  }
+
+  public List<MessageResponse> allMessages(Long id){
+    List<ChatMessage> messages = messageRepository.findByChatId(id);
+    List<MessageResponse> response = new ArrayList<>();
+    messages.forEach((message) ->{
+      String senderUsername = userRepository.findById(message.getSender()).get().getUsername();
+      MessageResponse tmp = new MessageResponse(message.getChatId(),senderUsername,
+          message.getText());
+      response.add(tmp);
+    });
     return response;
   }
 

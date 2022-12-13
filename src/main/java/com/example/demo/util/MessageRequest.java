@@ -11,13 +11,14 @@ import lombok.Setter;
 public class MessageRequest {
 
   private Long chatId;
-  private String token;
+  private String senderUsername;
 
-  private String messageText;
 
-  public MessageRequest(Long chatId, String token, String messageText) {
+  private String content;
+
+  public MessageRequest(Long chatId, String senderUsername, String content) {
     this.chatId = chatId;
-    this.token = token;
-    this.messageText = messageText;
+    this.senderUsername = senderUsername;
+    this.content = content;
   }
 }

@@ -14,6 +14,7 @@ import com.example.demo.util.IdList;
 import com.example.demo.util.IdRequest;
 import com.example.demo.util.LoginRequest;
 import com.example.demo.util.LoginResponse;
+import com.example.demo.util.MessageResponse;
 import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
 import io.jsonwebtoken.Claims;
@@ -131,7 +132,12 @@ public class AppUserController {
   public Map<String, Object> getChats(@RequestBody IdRequest id){
     //Long longId = Long.parseLong(id);
     return chatService.getChats(id.getId());
+  }
 
+  @PostMapping("/messages")
+  public List<MessageResponse> allMesages(@RequestBody IdRequest id){
+
+    return chatService.allMessages(id.getId());
   }
 
 
