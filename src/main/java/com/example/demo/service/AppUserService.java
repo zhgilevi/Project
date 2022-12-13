@@ -65,7 +65,12 @@ public class AppUserService {
     return responseMap;
   }
 
-  public Map<String, Object> getAll(){
+  public Map<String, Object> getAll(String token){
+    if (!jwtUtil.validateJwtToken(token)){
+      Map<String, Object> response = new HashMap<>();
+      response.put("code", 3);
+      return response;
+    }
     ArrayList<AppUser> users = new ArrayList<>();
     userRepository.findAll().forEach(user -> users.add(user) );
     Map<String, Object> response = new HashMap<>();
@@ -85,10 +90,13 @@ public class AppUserService {
     return new CustomResponse(response,CustomStatus.SUCCESS,null);
   }
 
-  public Map<String, Object> searchUser(String username) {
-    AppUser user = userRepository.findByUsername(username);
+  public Map<String, Object> searchUser(String username, String token) {
     List<AppUser> users = userRepository.usernameContains(username);
     Map<String, Object> respones = new HashMap<>();
+    if(!jwtUtil.validateJwtToken(token)){
+      respones.put("code",3);
+      return respones;
+    }
     if (users == null){
       respones.put("code",1);
       return respones;

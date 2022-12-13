@@ -1,12 +1,16 @@
 package com.example.demo.util;
 
 import com.example.demo.service.AppUserDetailService;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.Ed25519Verifier;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.impl.crypto.JwtSignatureValidator;
 import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,25 +45,40 @@ public class JwtUtil {
 
   public boolean validateJwtToken(String authToken){
 
-
     try{
-    Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
-    return true;
+    Claims claims = Jwts.parser().setSigningKey(jwtSecret)
+        .parseClaimsJws(authToken).getBody();
 
+
+    if (claims.getExpiration().before(new java.util.Date(System.currentTimeMillis()))){
+      return false;
+    }
+    return true;
     }
     catch (SignatureException e) {
+
       logger.log(Level.SEVERE, "Invalid JWT signature: {}", e.getMessage());
-    } catch (MalformedJwtException e) {
+      return false;
+    }
+    catch (MalformedJwtException e) {
+
       logger.log(Level.SEVERE, "Invalid JWT token: {}", e.getMessage());
-    } catch (ExpiredJwtException e) {
+      return true;
+    }
+    catch (ExpiredJwtException e) {
+
       logger.log(Level.SEVERE, "JWT token is expired: {}", e.getMessage());
+      return false;
     } catch (UnsupportedJwtException e) {
+
       logger.log(Level.SEVERE, "JWT token is unsupported: {}", e.getMessage());
+      return false;
     } catch (IllegalArgumentException e) {
+
       logger.log(Level.SEVERE, "JWT claims string is empty: {}}", e.getMessage());
+      return false;
     }
 
-    return false;
   }
 
 }

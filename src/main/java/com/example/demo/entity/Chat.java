@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,15 +24,17 @@ public class Chat {
   private long id;
 
 
-  @ElementCollection
-  private long[] participant;
+  private Long fParticipant;
+
+  private Long sParticipant;
 
   @ElementCollection
-  private ArrayList<Long> messages;
+  private List<Long> messages;
 
-  public Chat(long[] participant) {
-    this.participant = participant;
-    this.messages = new ArrayList<Long>();
+  public Chat(Long fParticipant, Long sParticipant) {
+    this.fParticipant =fParticipant;
+    this.sParticipant = sParticipant;
+    this.messages = new ArrayList<>();
   }
 
 

@@ -11,7 +11,10 @@ import lombok.Setter;
 public class SearchRequest {
   private String username;
 
-  public SearchRequest(String username) {
+  private String token;
+
+  public SearchRequest(String username, String token) {
     this.username = username;
+    this.token = token;
   }
 }
