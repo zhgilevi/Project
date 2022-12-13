@@ -32,14 +32,12 @@ version: 1.0
                            "regDate": "2022-12-12"
 
                   },
-                  "success": true,
                   "code": 0
                 }
         403:
           body:
             application/json:
               example:
-                "success": true,
                 "code": 2
   /signup:
     post:
@@ -167,9 +165,19 @@ version: 1.0
                   "data":
                     [
                       {
+                        "Participant":
+                          [
+                             "firstusername",
+                             "secondusername"
+                          ],
                         "chatId": 2
                       },
                       {
+                        "Participant":
+                          [
+                            "anotherusername",
+                            "andanother"
+                          ],
                         "chatId": 7
                       }
                     ],
@@ -180,10 +188,8 @@ version: 1.0
   /addchat:
     post:
       queryParameters:
-        "fUsername":
-          type: string
-        "sUsername":
-          type: string
+        "participant":
+          type: array
       responses:
         200:
           body:
@@ -247,11 +253,5 @@ version: 1.0
                   "success": false,
                   "code":2
                 }
-
-
-
-
-
-
 
 
