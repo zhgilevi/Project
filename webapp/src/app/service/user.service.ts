@@ -5,7 +5,6 @@ import { CustomResponse } from '../model/custom.response';
 import { Observable } from 'rxjs';
 import { LoginResponse } from '../model/login.response';
 import { CookieService } from 'ngx-cookie-service';
-import { CookieValidation } from '../model/token.validation';
 
 @Injectable()
 export class UserService {
@@ -38,11 +37,15 @@ export class UserService {
     });
   }
 
-  public tokenValidation(): Observable<CookieValidation> {
-    const queryParams = new HttpParams();
-    queryParams.append('token', this.cookieServics.get('token'));
-    return this.http.get<CookieValidation>(`${this.url}/...`, {
-      params: queryParams,
+  public validateToken(): Observable<{
+    success: boolean;
+    code: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      code: number;
+    }>(`${this.url}/...`, {
+      token: this.cookieServics.get('token')
     });
   }
 }

@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { CustomResponse } from '../model/custom.response';
 import { User } from '../model/user';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-homepage',
@@ -34,12 +35,13 @@ export class HomepageComponent {
   @ViewChild('scrollable') private myScrollContainer: ElementRef =
     new ElementRef<any>('scrollable');
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private cookieService: CookieService) {
     this.currentChatID = '';
     this.chatList = {};
   }
 
-  async ngOnInit() {
+
+  ngOnInit() {
     let users: User[] = [];
     this.userService.findAll().subscribe((data: CustomResponse) => {
       users = data.responseList;
