@@ -16,4 +16,8 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
       + "t.sParticipant= :fParticipant)")
   public Chat findByFParticipantOrSParticipant(@Param("fParticipant") Long fParticipant,
       @Param("sParticipant") Long sParticipant);
+
+
+  @Query("select t from Chat t where t.fParticipant= :id or t.sParticipant= :id")
+  public List<Chat> getChats(@Param("id") Long id);
 }
