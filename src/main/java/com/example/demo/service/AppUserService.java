@@ -10,7 +10,9 @@ import com.example.demo.util.EntityResponse;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,14 +45,22 @@ public class AppUserService {
     return user;
   }
 
-  public AppUser loginUser(LoginRequest loginRequest) {
+  public Map<String, String> loginUser(LoginRequest loginRequest) {
     AppUser user = userRepository.findByUsername(loginRequest.getUsername());
 
     if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
       return null;
     }
+    Map<String, String> responseMap = new HashMap<>();
+    responseMap.put("id",Long.toString(user.getId()));
+    responseMap.put("username", user.getUsername());
+    responseMap.put("fName", user.getFName());
+    responseMap.put("lName", user.getLName());
+    responseMap.put("regDate", user.getRegDate().toString());
     String token = jwtUtil.generateJwtToken(loginRequest.getUsername());
-    return user;
+    responseMap.put("token", token);
+
+    return responseMap;
   }
 
   public CustomResponse getAll(){
