@@ -1,13 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Chat;
 import com.example.demo.entity.ChatMessage;
 import com.example.demo.repository.AppUserRepository;
 import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.repository.ChatRepository;
-import com.example.demo.util.CustomResponse;
-import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.MessageResponse;
 import java.util.ArrayList;
