@@ -11,6 +11,7 @@ import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.EntityResponse;
 import com.example.demo.util.IdList;
+import com.example.demo.util.IdRequest;
 import com.example.demo.util.LoginRequest;
 import com.example.demo.util.LoginResponse;
 import com.example.demo.util.SearchRequest;
@@ -123,6 +124,13 @@ public class AppUserController {
   @PostMapping("/addchat")
   public Map<String, Object> createChat(@RequestBody IdList idList ){
     return chatService.addChat(idList.getParticipants());
+
+  }
+
+  @PostMapping("/chats")
+  public Map<String, Object> getChats(@RequestBody IdRequest id){
+    //Long longId = Long.parseLong(id);
+    return chatService.getChats(id.getId());
 
   }
 

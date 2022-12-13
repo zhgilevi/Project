@@ -49,7 +49,32 @@ public class ChatService {
     }
     return response;
 
+  }
 
+
+  public Map<String, Object> getChats(Long id){
+    List<Chat> chats = chatRepository.getChats(id);
+    Map<String, Object> response = new HashMap<>();
+    response.put("data",new ArrayList<Object>());
+    List<Object> tmp2 = new ArrayList<>();
+    chats.forEach((chat)->{
+      Map<String, Object> tmp = new HashMap<>();
+      String fUsername = userRepository.findById(chat.getFParticipant()).get().getUsername();
+      String sUsername = userRepository.findById(chat.getSParticipant()).get().getUsername();
+      tmp.put("participants", new String[]{fUsername, sUsername});
+      tmp.put("chatId", chat.getId());
+      tmp2.add(tmp);
+    });
+    if (tmp2.isEmpty()){
+      response.put("data", null);
+      response.put("code",1);
+    }
+    else {
+      response.put("data", tmp2);
+      response.put("code",0);
+    }
+
+    return response;
   }
 
 
