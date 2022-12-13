@@ -5,10 +5,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.entity.AppUser;
 import com.example.demo.payload.AppUserDto;
 import com.example.demo.service.AppUserService;
+import com.example.demo.service.ChatService;
 import com.example.demo.util.ContainerResponse;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.EntityResponse;
+import com.example.demo.util.IdList;
 import com.example.demo.util.LoginRequest;
 import com.example.demo.util.LoginResponse;
 import com.example.demo.util.SearchRequest;
@@ -16,12 +18,17 @@ import com.example.demo.util.SignUpRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.modelmapper.ModelMapper;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +56,10 @@ public class AppUserController {
 
   @Autowired
   ModelMapper modelMapper;
+
+  @Autowired
+  ChatService chatService;
+
 
 
   public AppUserController(AppUserService userService) {
@@ -87,9 +98,10 @@ public class AppUserController {
   }
 
   @PostMapping("/all")
-  public Map<String, Object> getAll(){
+  public Map<String, Object> getAll(@RequestBody String token){
 
-    return userService.getAll();
+
+    return userService.getAll(token);
   }
 
   @GetMapping("/user/{id}")
@@ -103,32 +115,19 @@ public class AppUserController {
       @RequestBody SearchRequest request){
     //token validation
 
-    return userService.searchUser(request.getUsername());
+    return userService.searchUser(request.getUsername(), request.getToken());
+
+  }
+
+  //participants
+  @PostMapping("/addchat")
+  public Map<String, Object> createChat(@RequestBody IdList idList ){
+    return chatService.addChat(idList.getParticipants());
 
   }
 
 
-  @PostMapping("/token")
-  public Map<String, Integer> validatetoken(
-      @RequestBody Map<String, String> data
-  ){
 
-    String username = data.get("username");
-    String token = data.get("token");
-    Map<String, Integer> response = new HashMap<>();
-    DecodedJWT jwt = JWT.decode(token);
-    Claims claims = Jwts.parser().setSigningKey("SecretKey").parseClaimsJws(token).getBody();
-    if (!claims.getSubject().equals(username)){
-      response.put("code", 2);
-    } else if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) {
-      response.put("code",2);
-    }
-    else {
-     response.put("code",0);
-    }
-    return response;
-
-  }
 
 
 }
