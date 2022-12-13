@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.entity.AppUser;
 import com.example.demo.payload.AppUserDto;
 import com.example.demo.service.AppUserService;
@@ -11,6 +13,9 @@ import com.example.demo.util.LoginRequest;
 import com.example.demo.util.LoginResponse;
 import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -100,6 +105,28 @@ public class AppUserController {
 
     return userService.searchUser(request.getUsername());
 
+  }
+
+
+  @PostMapping("/token")
+  public Map<String, Integer> validatetoken(
+      @RequestBody Map<String, String> data
+  ){
+
+    String username = data.get("username");
+    String token = data.get("token");
+    Map<String, Integer> response = new HashMap<>();
+    DecodedJWT jwt = JWT.decode(token);
+    Claims claims = Jwts.parser().setSigningKey("SecretKey").parseClaimsJws(token).getBody();
+    if (!claims.getSubject().equals(username)){
+      response.put("code", 2);
+    } else if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) {
+      response.put("code",2);
+    }
+    else {
+     response.put("code",0);
+    }
+    return response;
 
   }
 
