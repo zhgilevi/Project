@@ -10,15 +10,29 @@ import { UserService } from '../service/user.service';
 })
 export class UserListComponent {
 
-  users: User[];
+  table: {
+    id: string;
+    username: string;
+    fname: string;
+    lname: string;
+    regDate: string;
+    status: number;
+  }[];
+  searchString: string;
 
   constructor(private userService: UserService) {
-    this.users = [];
+    this.table = [];
+    this.searchString = '';
   }
 
   ngOnInit() {
-    this.userService.findAll().subscribe((data: CustomResponse) => {
-      this.users = data.responseList;
-    });
+    // this.userService.findAll().subscribe((data: CustomResponse) => {
+    //   this.users = data.responseList;
+    // });
+  }
+
+  handleSearch() {
+    if (this.searchString.length === 0) return;
+    alert(this.searchString);
   }
 }

@@ -8,7 +8,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
           <strong class="mb-1">{{ username }}</strong>
           <small>{{ date }}</small>
         </div>
-        <div class="col-10 mb-1 small"><strong>{{ getUnread() }}{{ username }}: </strong>{{ message }}</div>
+        <div class="col-10 mb-1 small"><strong>{{ getUnread() }}{{ username }}: </strong>{{ getMessageSlice() }}</div>
 </div>
   `,
   styles: [
@@ -38,6 +38,12 @@ export class ChatItemComponent {
 
   getUnread(): string {
     return (this.unread != 0) ? `(${this.unread}) ` : '';
+  }
+
+  getMessageSlice(): string {
+    const excess = `(${this.getUnread()}) ${this.username}:`.length;
+    const len = this.message.length;
+    return this.message.slice(0, Math.min((25 - excess < 0) ? 0 : 25 - excess, len)) + '..';
   }
 
   handleClick() {

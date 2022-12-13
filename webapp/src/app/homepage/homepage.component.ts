@@ -1,8 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { CustomResponse } from '../model/custom.response';
 import { User } from '../model/user';
 import { CookieService } from 'ngx-cookie-service';
+import { ChatList } from '../model/chats.list';
+import { MessageList } from '../model/message.list';
 
 @Component({
   selector: 'app-homepage',
@@ -15,11 +16,11 @@ export class HomepageComponent {
   chatList: {
     [key: string]: {
       chat: {
+        chatId: number;
         sender: string;
         content: string;
-        date: Date;
       }[];
-      user: User;
+      participant: string;
     };
   };
 
@@ -32,6 +33,8 @@ export class HomepageComponent {
     unread: number;
   }[] = [];
 
+  yourMessage: string = '';
+
   @ViewChild('scrollable') private myScrollContainer: ElementRef =
     new ElementRef<any>('scrollable');
 
@@ -42,62 +45,45 @@ export class HomepageComponent {
 
 
   ngOnInit() {
-    let users: User[] = [];
-    this.userService.findAll().subscribe((data: CustomResponse) => {
-      users = data.responseList;
-      console.log('Got Response:', users);
-      let flag = true;
-      for (const user of users) {
-        if (flag) {
-          this.currentChatID = user.id;
-          flag = false;
+    this.userService.getUserChats().subscribe((chatList: ChatList) => {
+      console.log('Got Response:', chatList);
+      this.cookieService.set('currentChatID', '');
+      this.currentChatID = '';
+      if (chatList.data) {
+        for (const chat of chatList.data) {
+          this.userService.getMessagesInChat(chat.chatId).subscribe((messageList: MessageList) => {
+            if (messageList.data) {
+              const you = this.cookieService.get('username');
+              this.chatList[chat.chatId] = {
+                chat: messageList.data,
+                participant: (chat.participants[0] === you) ? you : chat.participants[1]
+              }
+              if (this.chatMenu.length === 0) {
+                this.currentChatID = String(chat.chatId);
+                this.cookieService.set('currentChatID', this.currentChatID);
+              }
+              const len = messageList.data.length;
+              const last = (len > 0) ? messageList.data[len - 1].content : '';
+              this.chatMenu.push({
+                username: (len > 0) ? messageList.data[len - 1].sender : '',
+                message: last,
+                date: (new Date(Date.now())).toLocaleTimeString(),
+                id: String(chat.chatId),
+                selected: this.chatMenu.length === 0,
+                unread: 0
+              });
+            }
+          })
         }
-        const msgList = this.getMessageList(user.username);
-        this.chatList[user.id] = {
-          chat: msgList,
-          user: user,
-        };
-        const len = this.chatList[user.id].chat.length;
-        const msg =
-          len > 0
-            ? this.chatList[user.id].chat[len - 1].content.slice(
-                0,
-                Math.min(len, 15)
-              ) + '..'
-            : '';
-        this.chatMenu.push({
-          username: user.username,
-          message: msg,
-          date:
-            len > 0
-              ? this.chatList[user.id].chat[len - 1].date.toLocaleTimeString()
-              : '',
-          id: user.id,
-          selected: this.currentChatID == user.id,
-          unread: 0
-        });
       }
-      console.log('Selected ID:', this.currentChatID);
+      console.log('Selected Chat ID:', this.currentChatID);
       console.log('Generated ChatList:', this.chatList);
     });
-    setInterval(() => {
-      const id =
-        this.chatMenu[Math.floor(Math.random() * this.chatMenu.length)].id;
-      const msg = this.generateMessage(this.chatList[id].user.username);
-      this.chatList[id].chat.push(msg);
-      for (const chatItem of this.chatMenu) {
-        if (chatItem.id == id) {
-          const len = msg.content.length;
-          chatItem.message = msg.content.slice(0, Math.min(len, 15)) + '..';
-          chatItem.date = msg.date.toLocaleTimeString();
-          if (this.currentChatID != id) chatItem.unread++;
-        }
-      }
-    }, 200);
   }
 
   renderChat(id: string) {
     this.currentChatID = id;
+    this.cookieService.set('currentChatID', id);
     for (const chatItem of this.chatMenu) {
       chatItem.selected = chatItem.id == id;
       if (chatItem.id == id) {
@@ -105,6 +91,12 @@ export class HomepageComponent {
       }
     }
     this.scrollToBottom();
+  }
+
+  handleSendMessage() {
+    const msg = this.yourMessage;
+    if (msg.length === 0) return;
+    // do something
   }
 
   private scrollToBottom(): void {
@@ -117,43 +109,5 @@ export class HomepageComponent {
           this.myScrollContainer.nativeElement.scrollHeight;
       } catch (err) {}
     });
-  }
-
-  generateMessageText(): string {
-    const availableSentences = [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'Nullam bibendum urna in mauris dapibus finibus.',
-      'Donec vestibulum, justo a aliquet rutrum, augue nulla lobortis tellus, vitae suscipit risus lectus sit amet elit.',
-      'Sed consectetur risus bibendum ex venenatis, vitae tincidunt orci consequat. ',
-      'Integer mi metus, semper facilisis justo vitae, imperdiet tincidunt sem. Nulla maximus metus orci, at hendrerit ligula euismod at.',
-      'Pellentesque luctus sapien id urna lobortis, ut tempor velit efficitur.',
-      'Praesent vel interdum purus.',
-      'Sed erat leo, cursus quis sem ut, ornare rutrum magna.',
-    ];
-    return availableSentences.filter(() => Math.random() < 0.5).join(' ');
-  }
-
-  generateMessage(username: string): {
-    sender: string;
-    content: string;
-    date: Date;
-  } {
-    return {
-      sender: Math.random() < 0.5 ? 'You' : username,
-      content: this.generateMessageText(),
-      date: new Date(Date.now()),
-    };
-  }
-
-  getMessageList(username: string): {
-    sender: string;
-    content: string;
-    date: Date;
-  }[] {
-    return Array(Math.floor(Math.random() * 100) + 1)
-      .fill(null)
-      .map(() => {
-        return this.generateMessage(username);
-      });
   }
 }
