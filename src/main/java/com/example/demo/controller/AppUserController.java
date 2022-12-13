@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.AppUser;
 import com.example.demo.payload.AppUserDto;
 import com.example.demo.service.AppUserService;
+import com.example.demo.util.ContainerResponse;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.EntityResponse;
@@ -80,8 +81,9 @@ public class AppUserController {
     return new LoginResponse(0, data);
   }
 
-  @GetMapping("/all")
-  public CustomResponse getAll(){
+  @PostMapping("/all")
+  public Map<String, Object> getAll(){
+
     return userService.getAll();
   }
 
@@ -92,7 +94,7 @@ public class AppUserController {
   }
 
   @PostMapping("/search")
-  public CustomResponse findUser(
+  public Map<String, Object> findUser(
       @RequestBody SearchRequest request){
     //token validation
 
