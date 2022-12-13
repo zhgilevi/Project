@@ -1,15 +1,24 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.AppUser;
+import com.example.demo.payload.AppUserDto;
 import com.example.demo.service.AppUserService;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.EntityResponse;
 import com.example.demo.util.LoginRequest;
+import com.example.demo.util.LoginResponse;
 import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,22 +41,47 @@ public class AppUserController {
 
   private final AppUserService userService;
 
+  @Autowired
+  ModelMapper modelMapper;
+
 
   public AppUserController(AppUserService userService) {
+    super();
     this.userService = userService;
   }
 
-  @PostMapping("/registr")
-  public CustomResponse registrUser(@RequestBody SignUpRequest userInfo) {
+  @PostMapping("/signup")
+  public LoginResponse registrUser(@RequestBody SignUpRequest userInfo) {
     AppUser user = new AppUser(userInfo.getUsername(), userInfo.getFName(),
         userInfo.getLName(), userInfo.getPassword());
-    System.out.println(userInfo.getFName());
-    return userService.createUser(user);
+
+
+
+    AppUser userSaved = userService.createUser(user);
+    if (userSaved == null){
+      return new LoginResponse(2);
+    }
+    return new LoginResponse(0);
+
   }
 
-  @PostMapping("/signup")
-  public CustomResponse loginUser(@RequestBody LoginRequest loginRequest) {
-    return userService.loginUser(loginRequest);
+  @PostMapping("/signin")
+  public LoginResponse loginUser(@RequestBody LoginRequest loginRequest) {
+
+    Map<String, String> responseMap = new HashMap<>();
+
+    AppUser user = userService.loginUser(loginRequest);
+    if (user == null){
+      return new LoginResponse(2);
+    }
+    responseMap.put("id",Long.toString(user.getId()));
+    responseMap.put("username", user.getUsername());
+    responseMap.put("fName", user.getFName());
+    responseMap.put("lName", user.getLName());
+    responseMap.put("regDate", user.getRegDate().toString());
+
+
+    return new LoginResponse(0, responseMap);
   }
 
   @GetMapping("/all")
@@ -66,7 +100,6 @@ public class AppUserController {
       @RequestBody SearchRequest request){
     //token validation
 
-    System.out.println(request.getUsername());
     return userService.searchUser(request.getUsername());
 
 

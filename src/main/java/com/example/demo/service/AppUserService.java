@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 import com.example.demo.entity.AppUser;
+import com.example.demo.payload.AppUserDto;
 import com.example.demo.repository.AppUserRepository;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
@@ -32,25 +33,24 @@ public class AppUserService {
   JwtUtil jwtUtil;
 
 
-  public CustomResponse createUser(AppUser user) {
+  public AppUser createUser(AppUser user) {
 
     if (userRepository.existsByUsername(user.getUsername())) {
-      return new CustomResponse<>(null, CustomStatus.EXCEPTION, null);
+      return null;
     }
 
     userRepository.save(user);
-    return new CustomResponse(null, CustomStatus.SUCCESS, null);
+    return user;
   }
 
-  public CustomResponse loginUser(LoginRequest loginRequest) {
-    System.out.println(loginRequest.getUsername());
+  public AppUser loginUser(LoginRequest loginRequest) {
     AppUser user = userRepository.findByUsername(loginRequest.getUsername());
 
     if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
-      return new CustomResponse(null, CustomStatus.NOT_FOUND, null);
+      return null;
     }
     String token = jwtUtil.generateJwtToken(loginRequest.getUsername());
-    return new CustomResponse(null, CustomStatus.SUCCESS, token);
+    return user;
   }
 
   public CustomResponse getAll(){

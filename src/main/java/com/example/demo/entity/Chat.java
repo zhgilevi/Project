@@ -1,9 +1,11 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.ArrayList;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +22,16 @@ public class Chat {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  private long fParticipant;
-  private long sParticipant;
 
-  public Chat(long fParticipant, long sParticipant) {
-    this.fParticipant = fParticipant;
-    this.sParticipant = sParticipant;
+  @ElementCollection
+  private long[] participant;
+
+  @ElementCollection
+  private ArrayList<Long> messages;
+
+  public Chat(long[] participant) {
+    this.participant = participant;
+    this.messages = new ArrayList<Long>();
   }
 
 
