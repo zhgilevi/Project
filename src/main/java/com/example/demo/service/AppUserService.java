@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.entity.AppUser;
 import com.example.demo.payload.AppUserDto;
 import com.example.demo.repository.AppUserRepository;
+import com.example.demo.util.ContainerResponse;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.EntityResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,10 +65,13 @@ public class AppUserService {
     return responseMap;
   }
 
-  public CustomResponse getAll(){
+  public Map<String, Object> getAll(){
     ArrayList<AppUser> users = new ArrayList<>();
     userRepository.findAll().forEach(user -> users.add(user) );
-    return new CustomResponse(users,CustomStatus.SUCCESS,null);
+    Map<String, Object> response = new HashMap<>();
+    response.put("code",0);
+    response.put("data", users);
+    return response;
 
   }
 
@@ -80,14 +85,17 @@ public class AppUserService {
     return new CustomResponse(response,CustomStatus.SUCCESS,null);
   }
 
-  public CustomResponse searchUser(String username) {
+  public Map<String, Object> searchUser(String username) {
     AppUser user = userRepository.findByUsername(username);
-    List<AppUser> response = new ArrayList<>();
-    response.add(user);
-    if (user == null){
-      return new CustomResponse(null, CustomStatus.NOT_FOUND, null);
+    List<AppUser> users = userRepository.usernameContains(username);
+    Map<String, Object> respones = new HashMap<>();
+    if (users == null){
+      respones.put("code",1);
+      return respones;
     }
-    return new CustomResponse(response,CustomStatus.SUCCESS,null);
+    respones.put("code",0);
+    respones.put("data",users);
+    return respones;
   }
 
 
