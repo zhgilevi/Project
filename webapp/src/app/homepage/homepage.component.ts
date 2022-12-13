@@ -17,7 +17,7 @@ export class HomepageComponent {
     chatId: number;
     sender: string;
     content: string;
-  }> = webSocket('ws://localhost:8000'); // fix url
+  }> = webSocket('ws://localhost:8080/ws');
 
   currentChatID: string;
 
@@ -39,6 +39,7 @@ export class HomepageComponent {
     id: string;
     selected: boolean;
     unread: number;
+    dialogWith: string;
   }[] = [];
 
   yourMessage: string = '';
@@ -47,51 +48,54 @@ export class HomepageComponent {
     new ElementRef<any>('scrollable');
 
   constructor(private userService: UserService, private cookieService: CookieService) {
-    this.currentChatID = '';
+    this.currentChatID = this.cookieService.get('currentChatID');
     this.chatList = {};
   }
 
 
   ngOnInit() {
-    try {
-      console.log('Token:', this.cookieService.get('token'));
-      console.log('Username:', this.cookieService.get('username'));
-      console.log('First Name:', this.cookieService.get('fname'));
-      console.log('Last Name:', this.cookieService.get('lname'));
-      console.log('ID:', this.cookieService.get('id'));
-    } catch (err) {
-      return;
-    }
-
     this.userService.getUserChats().subscribe((chatList: ChatList) => {
       console.log('Got Response:', chatList);
-      this.cookieService.set('currentChatID', '');
-      this.currentChatID = '';
+      this.currentChatID = this.cookieService.get('currentChatID');
       if (chatList.data) {
         for (const chat of chatList.data) {
+          if (this.chatMenu.length === 0 && this.currentChatID === '') {
+            this.currentChatID = String(chat.chatId);
+            this.cookieService.set('currentChatID', this.currentChatID);
+          }
+          const you = this.cookieService.get('username');
+          const them = (chat.participants[0] === you) ? chat.participants[1] : chat.participants[0];
+          const chatMenuItem = {
+            username: '',
+            message: '',
+            date: '',
+            id: String(chat.chatId),
+            selected: this.currentChatID === String(chat.chatId),
+            unread: 0,
+            dialogWith: them
+          };
+          this.chatList[chat.chatId] = {
+            chat: [],
+            participant: them
+          }
           this.userService.getMessagesInChat(chat.chatId).subscribe((messageList: MessageList) => {
             if (messageList.data) {
-              const you = this.cookieService.get('username');
               this.chatList[chat.chatId] = {
                 chat: messageList.data,
-                participant: (chat.participants[0] === you) ? you : chat.participants[1]
+                participant: them
               }
-              if (this.chatMenu.length === 0) {
-                this.currentChatID = String(chat.chatId);
-                this.cookieService.set('currentChatID', this.currentChatID);
-              }
+              console.log("Them:", them);
               const len = messageList.data.length;
               const last = (len > 0) ? messageList.data[len - 1].content : '';
-              this.chatMenu.push({
-                username: (len > 0) ? messageList.data[len - 1].sender : '',
-                message: last,
-                date: (new Date(Date.now())).toLocaleTimeString(),
-                id: String(chat.chatId),
-                selected: this.chatMenu.length === 0,
-                unread: 0
-              });
+              chatMenuItem.username = (len > 0) ? messageList.data[len - 1].sender : '';
+              chatMenuItem.message = last;
+              chatMenuItem.date = '';
+              chatMenuItem.id = String(chat.chatId);
+              chatMenuItem.selected = this.currentChatID === String(chat.chatId);
+              chatMenuItem.unread = 0;
             }
-          })
+          });
+          this.chatMenu.push(chatMenuItem);
         }
       }
       console.log('Selected Chat ID:', this.currentChatID);
@@ -113,14 +117,18 @@ export class HomepageComponent {
     });
     for (const chatItem of this.chatMenu) {
       if (chatItem.id === id) {
-        chatItem.unread++;
+        if (sender === this.chatList[id].participant) {
+          chatItem.unread++;
+        }
         chatItem.username = sender;
         chatItem.message = content;
+        chatItem.date = (new Date(Date.now())).toLocaleTimeString();
       }
     }
   }
 
   renderChat(id: string) {
+    this.yourMessage = '';
     this.currentChatID = id;
     this.cookieService.set('currentChatID', id);
     for (const chatItem of this.chatMenu) {
@@ -134,12 +142,15 @@ export class HomepageComponent {
 
   handleSendMessage() {
     const msg = this.yourMessage;
+    console.log('You send Message:', msg);
     if (msg.length === 0) return;
-    this.myWebSocket.next({
-      chatId: Number(this.currentChatID),
-      sender: this.cookieService.get('username'),
-      content: msg
-    });
+    // this.myWebSocket.next({
+    //   chatId: Number(this.currentChatID),
+    //   sender: this.cookieService.get('username'),
+    //   content: msg
+    // });
+    this.yourMessage = '';
+    this.userService.sendMesage(this.currentChatID, this.cookieService.get('username'), msg);
   }
 
   private scrollToBottom(): void {

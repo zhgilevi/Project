@@ -10,9 +10,10 @@ import { MessageList } from '../model/message.list';
 
 @Injectable()
 export class UserService {
-  private url: string;
 
-  constructor(private http: HttpClient, private cookieServics: CookieService) {
+  public url: string;
+
+  constructor(private http: HttpClient, private cookieService: CookieService) {
     this.url = 'http://localhost:8080/api';
   }
 
@@ -35,7 +36,9 @@ export class UserService {
     return this.http.post<{
       data: User[];
       code: number;
-    }>(`${this.url}/all`, {});
+    }>(`${this.url}/all`, {
+      token: this.cookieService.get('token')
+    });
   }
 
   public login(user: User): Observable<LoginResponse> {
@@ -45,20 +48,9 @@ export class UserService {
     });
   }
 
-  public validateToken(): boolean {
-    let permission = false;
-    this.http.post<ValidResponse>(`${this.url}/token`, {
-      username: this.cookieServics.get('username'),
-      token: this.cookieServics.get('token')
-    }).subscribe(res => {
-      permission = res.code === 0;
-    });
-    return permission;
-  }
-
   public getUserChats(): Observable<ChatList> {
     return this.http.post<ChatList>(`${this.url}/chats`, {
-      id: Number(this.cookieServics.get('id'))
+      id: Number(this.cookieService.get('id'))
     });
   }
 
@@ -68,7 +60,7 @@ export class UserService {
     });
   }
 
-  public addChatWithUser(username: string): Observable<{
+  public addChatWithUser(id: string): Observable<{
     chatId: number;
     success: boolean;
     code: number;
@@ -77,8 +69,8 @@ export class UserService {
       chatId: number;
       success: boolean;
       code: number;
-    }>(`${this.url}/addChat`, {
-      chatUsers: [username, this.cookieServics.get('username')]
+    }>(`${this.url}/addchat`, {
+      participants: [id, this.cookieService.get('id')]
     });
   }
 
@@ -90,7 +82,16 @@ export class UserService {
       data: User[];
       code: number;
     }>(`${this.url}/search`, {
-      username: username
+      username: username,
+      token: this.cookieService.get('token')
     });
+  }
+
+  public sendMesage(chatId: string, sender: string, content: string) {
+    this.http.post<null>(`{${this.url}/app/send`, {
+      chatId: chatId,
+      seder: sender,
+      content: content
+    })
   }
 }

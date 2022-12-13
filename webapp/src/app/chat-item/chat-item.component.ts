@@ -5,10 +5,10 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
   template: `
     <div [ngClass]="getFullClass()" (click)="handleClick()">
         <div class="d-flex w-100 align-items-center justify-content-between">
-          <strong class="mb-1">{{ username }}</strong>
+          <strong class="mb-1">{{ dialogWith }}</strong>
           <small>{{ date }}</small>
         </div>
-        <div class="col-10 mb-1 small"><strong>{{ getUnread() }}{{ username }}: </strong>{{ getMessageSlice() }}</div>
+        <div class="col-10 mb-1 small" *ngIf="username.length !== 0"><strong>{{ getUnread() }}{{ username }}: </strong>{{ getMessageSlice() }}</div>
 </div>
   `,
   styles: [
@@ -21,6 +21,7 @@ export class ChatItemComponent {
   @Input() selected: boolean = false;
   @Input() id: string = '';
   @Input() unread: number = 0;
+  @Input() dialogWith: string = '';
 
   @Output() selectRequest = new EventEmitter<string>();
 
