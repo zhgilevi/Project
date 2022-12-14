@@ -20,14 +20,16 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @NoArgsConstructor
 public class MyHandler extends TextWebSocketHandler {
-  List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-  int messagecount = 0;
+
 
   @Autowired
   private ChatMessageService messageService;
+  private List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+
+
 
   public MyHandler(ChatMessageService messageService){
-    messageService = messageService;
+    this.messageService = messageService;
   }
 
   @Override
