@@ -7,13 +7,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageResponse {
-  private Long id;
+  private Long chatId;
   private String sender;
-  private String messageText;
+  private String content;
 
-  public MessageResponse(Long id, String sender, String messageText) {
-    this.id = id;
+  public MessageResponse(Long chatId, String sender, String content) {
+    this.chatId = chatId;
     this.sender = sender;
-    this.messageText = messageText;
+    this.content = content;
   }
 }
