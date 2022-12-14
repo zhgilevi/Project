@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -33,11 +34,6 @@ public class ChatController {
 
 
 
-  @PostMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
-  public void processMessage(Map<String, String> message){
-    messageService.save(message);
-    return;
-
 
 
 
@@ -49,6 +45,6 @@ public class ChatController {
 
 
 
-  }
+
 
 
