@@ -12,6 +12,7 @@ import com.example.demo.util.LoginResponse;
 import com.example.demo.util.MessageResponse;
 import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.modelmapper.ModelMapper;
@@ -112,8 +113,12 @@ public class AppUserController {
 
 
   @PostMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
-  public void processMessage(@RequestBody Map<String, String> message) {
+  public Map<String, Integer> processMessage(@RequestBody Map<String, String> message) {
     messageService.save(message);
+
+    Map<String, Integer> response = new HashMap<>();
+    response.put("code",0);
+    return response;
 
 
   }
