@@ -106,9 +106,12 @@ public class AppUserController {
   }
 
   @PostMapping("/messages")
-  public List<MessageResponse> allMesages(@RequestBody IdRequest id) {
+  public Map<String, Object> allMesages(@RequestBody IdRequest id) {
 
-    return chatService.allMessages(id.getId());
+   List<MessageResponse> response = chatService.allMessages(id.getId());
+   Map<String, Object> out = new HashMap<>();
+   out.put("data",response);
+   return out;
   }
 
 
