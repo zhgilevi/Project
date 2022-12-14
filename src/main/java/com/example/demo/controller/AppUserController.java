@@ -122,7 +122,10 @@ public class AppUserController {
     Map<String, Integer> response = new HashMap<>();
     response.put("code",0);
     return response;
+  }
 
-
+  @PostMapping("/update")
+  public LoginResponse update(@RequestBody SignUpRequest request){
+    return userService.updateUser(request);
   }
 }
