@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ChatController {
 
-  @Autowired
-  private SimpMessagingTemplate simpMessagingTemplate;
 
   @Autowired
   private ChatService chatService;
