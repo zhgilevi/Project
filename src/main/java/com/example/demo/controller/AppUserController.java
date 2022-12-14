@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AppUser;
 import com.example.demo.service.AppUserService;
+import com.example.demo.service.ChatMessageService;
 import com.example.demo.service.ChatService;
 import com.example.demo.util.CustomResponse;
 import com.example.demo.util.IdList;
@@ -37,6 +38,8 @@ public class AppUserController {
   @Autowired
   ChatService chatService;
 
+  @Autowired
+  ChatMessageService messageService;
 
 
   public AppUserController(AppUserService userService) {
@@ -49,10 +52,8 @@ public class AppUserController {
     AppUser user = new AppUser(userInfo.getUsername(), userInfo.getFName(),
         userInfo.getLName(), userInfo.getPassword());
 
-
-
     AppUser userSaved = userService.createUser(user);
-    if (userSaved == null){
+    if (userSaved == null) {
       return new LoginResponse(2);
     }
     return new LoginResponse(0);
@@ -62,34 +63,29 @@ public class AppUserController {
   @PostMapping("/signin")
   public LoginResponse loginUser(@RequestBody LoginRequest loginRequest) {
 
-
-
     Map<String, String> data = userService.loginUser(loginRequest);
-    if (data == null){
+    if (data == null) {
       return new LoginResponse(2);
     }
-
-
 
     return new LoginResponse(0, data);
   }
 
   @PostMapping("/all")
-  public Map<String, Object> getAll(@RequestBody String token){
-
+  public Map<String, Object> getAll(@RequestBody String token) {
 
     return userService.getAll(token);
   }
 
   @GetMapping("/user/{id}")
-  public CustomResponse<List<AppUser>> getUser(@PathVariable String id){
+  public CustomResponse<List<AppUser>> getUser(@PathVariable String id) {
     Long userId = Long.parseLong(id);
     return userService.getUser(userId);
   }
 
   @PostMapping("/search")
   public Map<String, Object> findUser(
-      @RequestBody SearchRequest request){
+      @RequestBody SearchRequest request) {
     //token validation
 
     return userService.searchUser(request.getUsername(), request.getToken());
@@ -98,24 +94,27 @@ public class AppUserController {
 
   //participants
   @PostMapping("/addchat")
-  public Map<String, Object> createChat(@RequestBody IdList idList ){
+  public Map<String, Object> createChat(@RequestBody IdList idList) {
     return chatService.addChat(idList.getParticipants());
 
   }
 
   @PostMapping("/chats")
-  public Map<String, Object> getChats(@RequestBody IdRequest id){
+  public Map<String, Object> getChats(@RequestBody IdRequest id) {
     return chatService.getChats(id.getId());
   }
 
   @PostMapping("/messages")
-  public List<MessageResponse> allMesages(@RequestBody IdRequest id){
+  public List<MessageResponse> allMesages(@RequestBody IdRequest id) {
 
     return chatService.allMessages(id.getId());
   }
 
 
+  @PostMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
+  public void processMessage(@RequestBody Map<String, String> message) {
+    messageService.save(message);
 
 
-
+  }
 }

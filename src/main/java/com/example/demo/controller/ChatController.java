@@ -34,11 +34,6 @@ public class ChatController {
 
 
 
-  @PostMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
-  public void processMessage(@RequestBody Map<String, String> message){
-    messageService.save(message);
-    return;
-
 
 
 
@@ -50,6 +45,6 @@ public class ChatController {
 
 
 
-  }
+
 
 
