@@ -7,6 +7,8 @@ import com.example.demo.util.CustomResponse;
 import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
+import com.example.demo.util.LoginResponse;
+import com.example.demo.util.SignUpRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +96,39 @@ public class AppUserService {
     respones.put("code",0);
     respones.put("data",users);
     return respones;
+  }
+
+
+  public LoginResponse updateUser(SignUpRequest request) {
+
+    if (!request.getUsername().isBlank()){
+      if (userRepository.existsByUsername(request.getUsername())){
+        return new LoginResponse(2);
+      }
+      userRepository.updateUsername(request.getUsername(), request.getId());
+    }
+    if (!request.getFName().isBlank()){
+      userRepository.updateFName(request.getFName(), request.getId());
+    }
+    if(!request.getLName().isBlank()){
+      userRepository.updateLName(request.getFName(), request.getId());
+    }
+    if(!request.getPassword().isBlank()){
+      userRepository.updatePassword(request.getFName(), request.getId());
+    }
+
+    AppUser user = userRepository.findById(request.getId()).get();
+    Map<String, String> responseMap = new HashMap<>();
+    responseMap.put("id",Long.toString(user.getId()));
+    responseMap.put("username", user.getUsername());
+    responseMap.put("fName", user.getFName());
+    responseMap.put("lName", user.getLName());
+    responseMap.put("regDate", user.getRegDate().toString());
+    String token = jwtUtil.generateJwtToken(request.getUsername());
+    responseMap.put("token", token);
+    LoginResponse response=new LoginResponse(0, responseMap);
+
+    return response;
   }
 
 
