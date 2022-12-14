@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.util;
 
 import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.service.ChatMessageService;
