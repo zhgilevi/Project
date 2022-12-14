@@ -42,8 +42,6 @@ public class MyHandler extends TextWebSocketHandler {
     Map<String, String> value = new Gson().fromJson(message.getPayload(), Map.class);
     super.handleTextMessage(session,message);
     //messageService.save(value);
-    MessageSaver saver = new MessageSaver();
-    saver.save(value);
     for (WebSocketSession webSocketSession: sessions){
       webSocketSession.sendMessage(message);//chatId content sender
     }
