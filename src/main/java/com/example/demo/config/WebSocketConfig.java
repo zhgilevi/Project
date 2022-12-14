@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.service.ChatMessageService;
 import com.example.demo.service.ChatService;
 import com.example.demo.util.SocketTextHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,11 +43,12 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketConfig implements WebSocketConfigurer {
 
 
-
+@Autowired
+  ChatMessageService messageService;
 
 
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(new MyHandler(), "/ws")
+    registry.addHandler(new MyHandler(messageService), "/ws")
         .setAllowedOrigins("*");
         // initial Request/Handshake interceptor
 
