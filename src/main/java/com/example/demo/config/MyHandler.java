@@ -1,10 +1,13 @@
 package com.example.demo.config;
 
+import com.example.demo.service.ChatMessageService;
+import com.example.demo.service.ChatService;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -18,22 +21,21 @@ public class MyHandler extends TextWebSocketHandler {
   List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
   int messagecount = 0;
 
+  @Autowired
+  ChatMessageService messageService;
+
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message)
-      throws InterruptedException, IOException {
+      throws InterruptedException, IOException, Exception {
 
     // parse message
     Map<String, String> value = new Gson().fromJson(message.getPayload(), Map.class);
+    super.handleTextMessage(session,message);
+    messageService.save(value);
+    for (WebSocketSession webSocketSession: sessions){
+      webSocketSession.sendMessage(message);//chatId content sender
+    }
 
-    // send message to all sessions
-      // do something with the sent object
-
-      messagecount++;
-      // create object myMessageNumberObject = {type: 'messageNumber', messagecount: messagecount}
-      // session.sendMessage(new TextMessage(myMessageNumberObject))
-
-      // emit message with type='message'
-      session.sendMessage(new TextMessage(message.getPayload()));
     }
 
 
@@ -52,15 +54,7 @@ public class MyHandler extends TextWebSocketHandler {
     // do something on connection closed
   }
 
-  @Override
-  public void handleMessage(WebSocketSession session, WebSocketMessage<?> message)
-  throws IOException, Exception{
-    super.handleMessage(session, message);
-    for (WebSocketSession webSocketSession: sessions){
-      webSocketSession.sendMessage(message);
-    }
-    // handle binary message
-  }
+
 
 
 
