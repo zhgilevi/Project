@@ -112,7 +112,7 @@ public class AppUserService {
       userRepository.updateFName(request.getFName(), request.getId());
     }
     if(!request.getLName().isBlank()){
-      userRepository.updateLName(request.getFName(), request.getId());
+      userRepository.updateLName(request.getLName(), request.getId());
     }
     if(!request.getPassword().isBlank()){
       userRepository.updatePassword(request.getFName(), request.getId());
