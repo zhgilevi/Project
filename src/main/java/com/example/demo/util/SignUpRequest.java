@@ -2,6 +2,7 @@ package com.example.demo.util;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ public class SignUpRequest {
     this.fName = fName;
     this.lName = lName;
     this.password = password;
+    this.id = Long.parseLong("0");
   }
   public SignUpRequest(String username, String fName, String lName, String password, Long id) {
     this.username = username;
