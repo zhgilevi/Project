@@ -3,7 +3,6 @@ import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class AccountService {
-
   public username: string;
 
   constructor(private cookieService: CookieService) {

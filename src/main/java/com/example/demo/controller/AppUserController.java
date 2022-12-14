@@ -122,7 +122,6 @@ public class AppUserController {
     Map<String, Integer> response = new HashMap<>();
     response.put("code",0);
     return response;
-
-
+    
   }
 }

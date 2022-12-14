@@ -1,14 +1,22 @@
 <div class="card my-5">
   <div class="card-body">
-    <form class="input-group mb-3" form="search" #userForm="ngForm" autocomplete="off">
+    <form
+      class="input-group mb-3"
+      form="search"
+      #userForm="ngForm"
+      autocomplete="off"
+    >
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">
-          <div style="
+          <div
+            style="
               -webkit-transform: rotate(45deg);
               -moz-transform: rotate(45deg);
               -o-transform: rotate(45deg);
               transform: rotate(45deg);
-            ">&#9906;
+            "
+          >
+            &#9906;
           </div>
         </span>
       </div>
@@ -43,7 +51,15 @@
           <td>{{ user.fname }}</td>
           <td>{{ user.lname }}</td>
           <td>{{ user.regDate }}</td>
-          <td><button type="button" class="btn btn-outline-primary btn-lg btn-block" (click)="handleEnterChat(user.id)">Enter Chat</button></td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-lg btn-block"
+              (click)="handleEnterChat(user.id)"
+            >
+              Enter Chat
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>

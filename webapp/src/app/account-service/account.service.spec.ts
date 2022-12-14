@@ -5,11 +5,14 @@ import { AccountService } from './account.service';
 describe('AccountService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AccountService]
+      providers: [AccountService],
     });
   });
 
-  it('should be created', inject([AccountService], (service: AccountService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [AccountService],
+    (service: AccountService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

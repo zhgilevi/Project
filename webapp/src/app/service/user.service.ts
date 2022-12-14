@@ -10,7 +10,6 @@ import { MessageList } from '../model/message.list';
 
 @Injectable()
 export class UserService {
-
   public url: string;
 
   public username: string;
@@ -44,7 +43,7 @@ export class UserService {
       data: User[];
       code: number;
     }>(`${this.url}/all`, {
-      token: this.cookieService.get('token')
+      token: this.cookieService.get('token'),
     });
   }
 
@@ -57,13 +56,13 @@ export class UserService {
 
   public getUserChats(): Observable<ChatList> {
     return this.http.post<ChatList>(`${this.url}/chats`, {
-      id: Number(this.cookieService.get('id'))
+      id: Number(this.cookieService.get('id')),
     });
   }
 
   public getMessagesInChat(chatID: number): Observable<MessageList> {
     return this.http.post<MessageList>(`${this.url}/messages`, {
-      chatId: chatID
+      id: chatID,
     });
   }
 
@@ -77,7 +76,7 @@ export class UserService {
       success: boolean;
       code: number;
     }>(`${this.url}/addchat`, {
-      participants: [id, this.cookieService.get('id')]
+      participants: [id, this.cookieService.get('id')],
     });
   }
 
@@ -90,18 +89,34 @@ export class UserService {
       code: number;
     }>(`${this.url}/search`, {
       username: username,
-      token: this.cookieService.get('token')
+      token: this.cookieService.get('token'),
     });
   }
 
-  public sendMesage(chatId: string, sender: string, content: string) {
-    console.log('Sending Message', content);
-    this.http.post<null>(`{${this.url}/app/send`, {
+  public sendMesage(chatId: number, sender: string, content: string) {
+    const body = {
       chatId: chatId,
-      seder: sender,
-      content: content
-    }).subscribe(res => {
+      sender: sender,
+      content: content,
+    };
+    console.log('Sending Message:', body);
+    this.http.post<ValidResponse>(`${this.url}/send`, body).subscribe((res) => {
       console.log('Got Response:', res);
-    })
+    });
+  }
+
+  public updateUserInfo(user: {
+    username: string;
+    fname: string;
+    lname: string;
+    password: string;
+  }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.url}/update`, {
+      id: this.cookieService.get('id'),
+      username: user.username,
+      fname: user.fname,
+      lname: user.lname,
+      password: user.password,
+    });
   }
 }

@@ -16,6 +16,7 @@ export class HomepageComponent {
   webSocket = webSocket<{
     chatId: number;
     sender: string;
+    receiver: string;
     content: string;
   }>('ws://localhost:8080/ws');
 
@@ -42,6 +43,8 @@ export class HomepageComponent {
   }[] = [];
 
   yourMessage: string = '';
+
+  loadFlag = false;
 
   @ViewChild('scrollable') private myScrollContainer: ElementRef =
     new ElementRef<any>('scrollable');
@@ -122,6 +125,7 @@ export class HomepageComponent {
       if (this.chatMenu.length == 0) {
         this.currentChatID = '';
       }
+      this.loadFlag = true;
       console.log('Selected Chat ID:', this.currentChatID);
       console.log('Generated ChatList:', this.chatList);
     });
@@ -130,8 +134,29 @@ export class HomepageComponent {
       console.log('Received from WebSocket:', data);
       if (String(data.chatId) in this.chatList) {
         this.addMessage(String(data.chatId), data.sender, data.content);
+      } else if (data.receiver === this.cookieService.get('username')) {
+        this.chatList[data.chatId] = {
+          chat: [
+            {
+              chatId: data.chatId,
+              sender: data.sender,
+              content: data.content,
+            },
+          ],
+          participant: data.sender,
+        };
+        this.chatMenu.push({
+          username: data.sender,
+          message: data.content,
+          id: String(data.chatId),
+          selected: false,
+          unread: 1,
+          dialogWith: data.sender,
+        });
+        this.sortMenu();
       }
     });
+    this.sortMenu();
   }
 
   addMessage(id: string, sender: string, content: string) {
@@ -151,6 +176,7 @@ export class HomepageComponent {
         chatItem.message = content;
       }
     }
+    this.sortMenu();
     this.scrollToBottom();
   }
 
@@ -173,8 +199,14 @@ export class HomepageComponent {
     this.webSocket.next({
       chatId: Number(this.currentChatID),
       sender: this.cookieService.get('username'),
+      receiver: this.chatList[this.currentChatID].participant,
       content: msg,
     });
+    this.userService.sendMesage(
+      Number(this.currentChatID),
+      this.cookieService.get('username'),
+      msg
+    );
     this.yourMessage = '';
   }
 
@@ -187,6 +219,16 @@ export class HomepageComponent {
         this.myScrollContainer.nativeElement.scrollTop =
           this.myScrollContainer.nativeElement.scrollHeight;
       } catch (err) {}
+    });
+  }
+
+  shouldRenderMessage(): boolean {
+    return this.currentChatID.length == 0 && this.loadFlag;
+  }
+
+  sortMenu() {
+    this.chatMenu.sort((a: any, b: any): number => {
+      return b.unread - a.unread;
     });
   }
 }

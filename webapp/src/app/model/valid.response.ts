@@ -1,4 +1,4 @@
 export class ValidResponse {
-    success?: boolean;
-    code?: number;
+  success?: boolean;
+  code?: number;
 }

@@ -40,7 +40,7 @@ export class SignInComponent {
           this.router.navigate(['/home']);
           break;
         default:
-          // do something
+        // do something
       }
     });
   }

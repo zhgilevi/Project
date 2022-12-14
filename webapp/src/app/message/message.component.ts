@@ -19,10 +19,11 @@ export class MessageComponent {
 
   displayedName: string = '';
 
-  constructor(private cookieService: CookieService) { }
+  constructor(private cookieService: CookieService) {}
 
   ngOnInit() {
-    this.displayedName = (this.sender == this.cookieService.get('username')) ? 'You' : this.sender;
+    this.displayedName =
+      this.sender == this.cookieService.get('username') ? 'You' : this.sender;
   }
 
   getFullClass(): Object {

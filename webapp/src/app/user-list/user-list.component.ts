@@ -78,7 +78,7 @@ export class UserListComponent {
 
   handleEnterChat(id: string) {
     console.log('Creating Chat with User:', id);
-    this.userService.addChatWithUser(id).subscribe(res => {
+    this.userService.addChatWithUser(id).subscribe((res) => {
       switch (res.code) {
         case 0:
           console.log('Chat Creation Response:', res);
@@ -86,6 +86,6 @@ export class UserListComponent {
           this.router.navigate(['/home']);
           break;
       }
-    })
+    });
   }
 }

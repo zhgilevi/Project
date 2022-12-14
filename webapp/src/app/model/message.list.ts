@@ -1,8 +1,7 @@
 export class MessageList {
-    data?: {
-        chatId: number;
-        sender: string;
-        content: string;
-    }[];
-    // other fields
+  data?: {
+    chatId: number;
+    sender: string;
+    content: string;
+  }[];
 }

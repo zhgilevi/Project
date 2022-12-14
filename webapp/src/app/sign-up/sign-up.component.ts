@@ -11,10 +11,7 @@ import { User } from '../model/user';
 export class SignUpComponent {
   user: User;
 
-  constructor(
-    private router: Router,
-    private userService: UserService
-  ) {
+  constructor(private router: Router, private userService: UserService) {
     this.user = new User();
   }
 

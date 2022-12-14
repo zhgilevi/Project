@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 65vh;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
