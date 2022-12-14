@@ -1,0 +1,88 @@
+<div class="card my-5" *ngIf="shouldRenderMessage()">
+  <div class="card-body">
+    <h1 class="text-center">
+      You have no active Chats, try: <a routerLink="/users">Search</a>
+    </h1>
+  </div>
+</div>
+
+<main class="content" *ngIf="currentChatID.length != 0">
+  <div class="container p-0">
+    <div class="container p-0">
+      <div class="row g-0">
+        <div class="col-12 col-lg-5 col-xl-3">
+          <div
+            class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white scrollable"
+          >
+            <div
+              class="list-group list-group-flush border-bottom scrollarea item"
+            >
+              <app-chat-item
+                *ngFor="let chatItem of chatMenu"
+                [message]="chatItem.message"
+                [username]="chatItem.username"
+                [selected]="chatItem.selected"
+                [id]="chatItem.id"
+                [unread]="chatItem.unread"
+                [dialogWith]="chatItem.dialogWith"
+                (selectRequest)="renderChat($event)"
+              >
+              </app-chat-item>
+            </div>
+          </div>
+        </div>
+        <div
+          class="col-12 col-lg-7 col-xl-9 mh-50"
+          *ngIf="currentChatID.length != 0"
+        >
+          <div class="py-2 px-4 border-bottom d-none d-lg-block">
+            <div class="d-flex align-items-center py-1">
+              <div class="flex-grow-1 pl-3">
+                <strong>{{ chatList[currentChatID].participant }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="position-relative" *ngIf="currentChatID.length != 0">
+            <div class="chat-messages p-4" #scrollable>
+              <app-message
+                *ngFor="let message of chatList[currentChatID].chat"
+                [sender]="message.sender"
+                [content]="message.content"
+              >
+              </app-message>
+            </div>
+          </div>
+
+          <div class="flex-grow-0 py-3 px-4 border-top">
+            <form
+              class="input-group"
+              (ngSubmit)="handleSendMessage()"
+              #userForm="ngForm"
+            >
+              <input
+                type="text"
+                name="send message"
+                [(ngModel)]="yourMessage"
+                class="form-control w-75"
+                placeholder="Type your message"
+                required
+                id="yourMessage"
+                #youMessage="ngModel"
+                autocomplete="off"
+                (keyup.enter)="handleSendMessage()"
+              />
+              <button
+                type="submit"
+                [disabled]="!userForm.form.valid"
+                class="btn btn-primary form-control"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

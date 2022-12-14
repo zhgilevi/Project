@@ -1,0 +1,67 @@
+<div class="card my-5">
+  <div class="card-body">
+    <form
+      class="input-group mb-3"
+      form="search"
+      #userForm="ngForm"
+      autocomplete="off"
+    >
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">
+          <div
+            style="
+              -webkit-transform: rotate(45deg);
+              -moz-transform: rotate(45deg);
+              -o-transform: rotate(45deg);
+              transform: rotate(45deg);
+            "
+          >
+            &#9906;
+          </div>
+        </span>
+      </div>
+      <input
+        type="text"
+        name="search bar"
+        [(ngModel)]="searchString"
+        class="form-control"
+        placeholder="Username"
+        aria-label="Username"
+        aria-describedby="basic-addon1"
+        id="username"
+        (keyup.enter)="handleSearch()"
+        #username="ngModel"
+      />
+    </form>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Username</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Registration Date</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of table">
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.fname }}</td>
+          <td>{{ user.lname }}</td>
+          <td>{{ user.regDate }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-lg btn-block"
+              (click)="handleEnterChat(user.id)"
+            >
+              Enter Chat
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
