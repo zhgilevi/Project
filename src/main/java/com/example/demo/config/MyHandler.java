@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
@@ -17,12 +18,17 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
+@NoArgsConstructor
 public class MyHandler extends TextWebSocketHandler {
   List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
   int messagecount = 0;
 
   @Autowired
-  ChatMessageService messageService;
+  private ChatMessageService messageService;
+
+  public MyHandler(ChatMessageService messageService){
+    messageService = messageService;
+  }
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message)
