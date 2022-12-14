@@ -6,9 +6,10 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
     <div [ngClass]="getFullClass()" (click)="handleClick()">
         <div class="d-flex w-100 align-items-center justify-content-between">
           <strong class="mb-1">{{ dialogWith }}</strong>
-          <small>{{ date }}</small>
+          <span class="badge bg-dark" *ngIf="unread != 0">{{ unread }}</span>
         </div>
-        <div class="col-10 mb-1 small" *ngIf="username.length !== 0"><strong>{{ getUnread() }}{{ username }}: </strong>{{ getMessageSlice() }}</div>
+        <div class="col-10 mb-1 small" *ngIf="username.length !== 0">
+        <strong> {{ username }}: </strong>{{ getMessageSlice() }}</div>
 </div>
   `,
   styles: [
@@ -17,7 +18,6 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 export class ChatItemComponent {
   @Input() username: string = '';
   @Input() message: string = '';
-  @Input() date: string = '';
   @Input() selected: boolean = false;
   @Input() id: string = '';
   @Input() unread: number = 0;
@@ -37,12 +37,8 @@ export class ChatItemComponent {
     }
   }
 
-  getUnread(): string {
-    return (this.unread != 0) ? `(${this.unread}) ` : '';
-  }
-
   getMessageSlice(): string {
-    const excess = `(${this.getUnread()}) ${this.username}:`.length;
+    const excess = `(${this.unread}) ${this.username}:`.length + 1;
     const len = this.message.length;
     return this.message.slice(0, Math.min((25 - excess < 0) ? 0 : 25 - excess, len)) + '..';
   }

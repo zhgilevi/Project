@@ -13,8 +13,15 @@ export class UserService {
 
   public url: string;
 
+  public username: string;
+
   constructor(private http: HttpClient, private cookieService: CookieService) {
     this.url = 'http://localhost:8080/api';
+    this.username = '';
+  }
+
+  updateUseraname() {
+    this.username = this.cookieService.get('username');
   }
 
   public register(user: User): Observable<ValidResponse> {
@@ -88,10 +95,13 @@ export class UserService {
   }
 
   public sendMesage(chatId: string, sender: string, content: string) {
+    console.log('Sending Message', content);
     this.http.post<null>(`{${this.url}/app/send`, {
       chatId: chatId,
       seder: sender,
       content: content
+    }).subscribe(res => {
+      console.log('Got Response:', res);
     })
   }
 }

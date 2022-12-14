@@ -28,6 +28,10 @@
         </li>
       </ul>
     </div>
+    <div class="d-block"></div>
+    <div class="list-inline-item" *ngIf="!accountService.isDefault()">
+      <strong><a routerLink="/account" class="btn btn-dark">{{ accountService.username }}</a></strong>
+    </div>
   </div>
 </nav>
 <div class="container mt-3">

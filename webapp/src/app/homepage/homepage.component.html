@@ -1,4 +1,4 @@
-<div class="card my-5" *ngIf="currentChatID.length == 0">
+<div class="card my-5" *ngIf="currentChatID.length == 0 && accountService.isDefault()">
   <div class="card-body">
     <h1 class="text-center">You have no active Chats, try: <a routerLink="/users">Search</a></h1>
   </div>
@@ -12,7 +12,6 @@
           <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white scrollable">
             <div class="list-group list-group-flush border-bottom scrollarea item">
                 <app-chat-item *ngFor="let chatItem of chatMenu"
-                [date]="chatItem.date"
                 [message]="chatItem.message"
                 [username]="chatItem.username"
                 [selected]="chatItem.selected"

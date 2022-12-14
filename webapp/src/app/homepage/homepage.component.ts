@@ -1,10 +1,11 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { webSocket } from 'rxjs/webSocket';
 import { UserService } from '../service/user.service';
-import { User } from '../model/user';
 import { CookieService } from 'ngx-cookie-service';
 import { ChatList } from '../model/chats.list';
 import { MessageList } from '../model/message.list';
+import { Router } from '@angular/router';
+import { AccountService } from '../account-service/account.service';
 
 @Component({
   selector: 'app-homepage',
@@ -12,12 +13,11 @@ import { MessageList } from '../model/message.list';
   styleUrls: ['./homepage.component.css'],
 })
 export class HomepageComponent {
-
-  myWebSocket: WebSocketSubject<{
+  webSocket = webSocket<{
     chatId: number;
     sender: string;
     content: string;
-  }> = webSocket('ws://localhost:8080/ws');
+  }>('ws://localhost:8080/ws');
 
   currentChatID: string;
 
@@ -35,7 +35,6 @@ export class HomepageComponent {
   chatMenu: {
     username: string;
     message: string;
-    date: string;
     id: string;
     selected: boolean;
     unread: number;
@@ -47,13 +46,21 @@ export class HomepageComponent {
   @ViewChild('scrollable') private myScrollContainer: ElementRef =
     new ElementRef<any>('scrollable');
 
-  constructor(private userService: UserService, private cookieService: CookieService) {
-    this.currentChatID = this.cookieService.get('currentChatID');
+  constructor(
+    private userService: UserService,
+    private cookieService: CookieService,
+    private router: Router,
+    public accountService: AccountService
+  ) {
+    this.currentChatID = '';
     this.chatList = {};
   }
 
-
   ngOnInit() {
+    if (this.accountService.isDefault()) {
+      this.router.navigate(['/signin']);
+    }
+    console.log('Requesting Chat List...');
     this.userService.getUserChats().subscribe((chatList: ChatList) => {
       console.log('Got Response:', chatList);
       this.currentChatID = this.cookieService.get('currentChatID');
@@ -64,7 +71,10 @@ export class HomepageComponent {
             this.cookieService.set('currentChatID', this.currentChatID);
           }
           const you = this.cookieService.get('username');
-          const them = (chat.participants[0] === you) ? chat.participants[1] : chat.participants[0];
+          const them =
+            chat.participants[0] === you
+              ? chat.participants[1]
+              : chat.participants[0];
           const chatMenuItem = {
             username: '',
             message: '',
@@ -72,37 +82,52 @@ export class HomepageComponent {
             id: String(chat.chatId),
             selected: this.currentChatID === String(chat.chatId),
             unread: 0,
-            dialogWith: them
+            dialogWith: them,
           };
           this.chatList[chat.chatId] = {
             chat: [],
-            participant: them
-          }
-          this.userService.getMessagesInChat(chat.chatId).subscribe((messageList: MessageList) => {
-            if (messageList.data) {
-              this.chatList[chat.chatId] = {
-                chat: messageList.data,
-                participant: them
+            participant: them,
+          };
+          console.log(
+            'Requesting Messages in Chat:',
+            chat.chatId,
+            'With Users:',
+            chat.participants
+          );
+          this.userService
+            .getMessagesInChat(chat.chatId)
+            .subscribe((messageList: MessageList) => {
+              console.log('Response:', messageList);
+              if (messageList.data) {
+                this.chatList[chat.chatId] = {
+                  chat: messageList.data,
+                  participant: them,
+                };
+                console.log('Them:', them);
+                const len = messageList.data.length;
+                const last = len > 0 ? messageList.data[len - 1].content : '';
+                chatMenuItem.username =
+                  len > 0 ? messageList.data[len - 1].sender : '';
+                chatMenuItem.message = last;
+                chatMenuItem.date = '';
+                chatMenuItem.id = String(chat.chatId);
+                chatMenuItem.selected =
+                  this.currentChatID === String(chat.chatId);
+                chatMenuItem.unread = 0;
               }
-              console.log("Them:", them);
-              const len = messageList.data.length;
-              const last = (len > 0) ? messageList.data[len - 1].content : '';
-              chatMenuItem.username = (len > 0) ? messageList.data[len - 1].sender : '';
-              chatMenuItem.message = last;
-              chatMenuItem.date = '';
-              chatMenuItem.id = String(chat.chatId);
-              chatMenuItem.selected = this.currentChatID === String(chat.chatId);
-              chatMenuItem.unread = 0;
-            }
-          });
+            });
           this.chatMenu.push(chatMenuItem);
         }
+      }
+      if (this.chatMenu.length == 0) {
+        this.currentChatID = '';
       }
       console.log('Selected Chat ID:', this.currentChatID);
       console.log('Generated ChatList:', this.chatList);
     });
 
-    this.myWebSocket.asObservable().subscribe(data => {
+    this.webSocket.asObservable().subscribe((data) => {
+      console.log('Received from WebSocket:', data);
       if (String(data.chatId) in this.chatList) {
         this.addMessage(String(data.chatId), data.sender, data.content);
       }
@@ -113,18 +138,20 @@ export class HomepageComponent {
     this.chatList[id].chat.push({
       chatId: Number(id),
       sender: sender,
-      content: content
+      content: content,
     });
     for (const chatItem of this.chatMenu) {
       if (chatItem.id === id) {
         if (sender === this.chatList[id].participant) {
           chatItem.unread++;
+        } else {
+          chatItem.unread = 0;
         }
         chatItem.username = sender;
         chatItem.message = content;
-        chatItem.date = (new Date(Date.now())).toLocaleTimeString();
       }
     }
+    this.scrollToBottom();
   }
 
   renderChat(id: string) {
@@ -142,15 +169,13 @@ export class HomepageComponent {
 
   handleSendMessage() {
     const msg = this.yourMessage;
-    console.log('You send Message:', msg);
     if (msg.length === 0) return;
-    // this.myWebSocket.next({
-    //   chatId: Number(this.currentChatID),
-    //   sender: this.cookieService.get('username'),
-    //   content: msg
-    // });
+    this.webSocket.next({
+      chatId: Number(this.currentChatID),
+      sender: this.cookieService.get('username'),
+      content: msg,
+    });
     this.yourMessage = '';
-    this.userService.sendMesage(this.currentChatID, this.cookieService.get('username'), msg);
   }
 
   private scrollToBottom(): void {

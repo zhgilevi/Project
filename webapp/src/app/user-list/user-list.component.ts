@@ -3,6 +3,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { User } from '../model/user';
 import { UserService } from '../service/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AccountService } from '../account-service/account.service';
 
 @Component({
   selector: 'app-user-list',
@@ -22,13 +23,17 @@ export class UserListComponent {
   constructor(
     private userService: UserService,
     private cookieService: CookieService,
-    private router: Router
+    private router: Router,
+    private accountService: AccountService
   ) {
     this.table = [];
     this.searchString = '';
   }
 
   ngOnInit() {
+    if (this.accountService.isDefault()) {
+      this.router.navigate(['/signin']);
+    }
     console.log('Your Info:', this.cookieService.getAll());
     this.userService.getAllUsers().subscribe((res) => {
       console.log('All Users Response:', res);

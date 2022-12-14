@@ -11,6 +11,8 @@ import { ChatItemComponent } from './chat-item/chat-item.component';
 import { MessageComponent } from './message/message.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { AccountInfoComponent } from './account-info/account-info.component';
+import { AccountService } from './account-service/account.service';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ChatItemComponent,
     MessageComponent,
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    AccountInfoComponent
   ],
   imports: [
     FormsModule,
@@ -28,7 +31,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [UserService],
+  providers: [UserService, AccountService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../service/user.service';
 import { User } from '../model/user';
 import { CookieService } from 'ngx-cookie-service';
+import { AccountService } from '../account-service/account.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,7 +16,8 @@ export class SignInComponent {
   constructor(
     private router: Router,
     private userService: UserService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private accountService: AccountService
   ) {
     this.user = new User();
   }
@@ -33,6 +35,7 @@ export class SignInComponent {
             this.cookieService.set('lname', res.data.lName);
             this.cookieService.set('id', String(res.data.id));
             this.cookieService.set('regDate', res.data.regDate);
+            this.accountService.updateUsername();
           }
           this.router.navigate(['/home']);
           break;
