@@ -1,7 +1,10 @@
 package com.example.demo.config;
 
+import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.service.ChatMessageService;
 import com.example.demo.service.ChatService;
+import com.example.demo.util.MessageRequest;
+import com.example.demo.util.MessageSaver;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
@@ -21,16 +24,15 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @NoArgsConstructor
 public class MyHandler extends TextWebSocketHandler {
 
-
   @Autowired
-  private ChatMessageService messageService;
+  ChatMessageRepository messageRepository;
+
+
+
   private List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 
 
-  public MyHandler(ChatMessageService messageService){
-    this.messageService = messageService;
-  }
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message)
@@ -39,7 +41,9 @@ public class MyHandler extends TextWebSocketHandler {
     // parse message
     Map<String, String> value = new Gson().fromJson(message.getPayload(), Map.class);
     super.handleTextMessage(session,message);
-    messageService.save(value);
+    //messageService.save(value);
+    MessageSaver saver = new MessageSaver();
+    saver.save(value);
     for (WebSocketSession webSocketSession: sessions){
       webSocketSession.sendMessage(message);//chatId content sender
     }

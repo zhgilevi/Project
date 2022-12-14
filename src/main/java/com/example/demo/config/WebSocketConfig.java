@@ -43,12 +43,10 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketConfig implements WebSocketConfigurer {
 
 
-@Autowired
-  ChatMessageService messageService;
 
 
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(new MyHandler(messageService), "/ws")
+    registry.addHandler(new MyHandler(), "/ws")
         .setAllowedOrigins("*");
         // initial Request/Handshake interceptor
 
