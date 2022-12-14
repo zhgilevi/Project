@@ -12,6 +12,7 @@ import com.example.demo.util.LoginResponse;
 import com.example.demo.util.MessageResponse;
 import com.example.demo.util.SearchRequest;
 import com.example.demo.util.SignUpRequest;
+import com.example.demo.util.UpdateRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +126,7 @@ public class AppUserController {
   }
 
   @PostMapping("/update")
-  public LoginResponse update(@RequestBody SignUpRequest request){
+  public LoginResponse update(@RequestBody UpdateRequest request){
     return userService.updateUser(request);
   }
 }
