@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 
+import com.example.demo.entity.AppUser;
+import com.example.demo.entity.Chat;
 import com.example.demo.entity.ChatMessage;
 import com.example.demo.repository.AppUserRepository;
 import com.example.demo.repository.ChatMessageRepository;
@@ -10,6 +12,7 @@ import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.MessageRequest;
 import com.example.demo.util.MessageResponse;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +69,22 @@ public class ChatMessageService {
     messageRepository.save(message);
     return new MessageResponse(request.getChatId(),request.getSenderUsername(),
         request.getContent());
+  }
+
+  public void save(Map<String, String> message){
+    Long chatId = Long.parseLong(message.get("chatId"));
+    Long senderId = userRepository.findByUsername(message.get("sender")).getId();
+    Chat chat = chatRepository.findById(Long.parseLong(message.get("chatId"))).get();
+    Long receiverId;
+    if (chat.getSParticipant() == senderId){
+       receiverId = chat.getFParticipant();
+    }
+    else{
+       receiverId = chat.getFParticipant();
+    }
+
+    ChatMessage newMessage = new ChatMessage(message.get("content"),senderId,receiverId,chatId);
+    messageRepository.save(newMessage);
+
   }
 }
