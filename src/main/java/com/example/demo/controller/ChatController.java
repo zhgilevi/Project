@@ -13,9 +13,13 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class ChatController {
 
 
@@ -29,14 +33,13 @@ public class ChatController {
 
 
 
-  @MessageMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
-  @SendTo("/chat/accept")
-  public MessageResponse processMessage(@Payload MessageRequest messageRequest){
-    //token validation
+  @PostMapping("/send")//send to /app/chat response to /chat/{chatId}/queue/messages
+  public void processMessage(Map<String, String> message){
+    messageService.save(message);
+    return;
 
 
 
-    return processMessage(messageRequest);
 
   }
 
