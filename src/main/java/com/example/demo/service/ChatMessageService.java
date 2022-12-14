@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 
-import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Chat;
 import com.example.demo.entity.ChatMessage;
 import com.example.demo.repository.AppUserRepository;

@@ -94,7 +94,6 @@ public class AppUserController {
 
   }
 
-  //participants
   @PostMapping("/addchat")
   public Map<String, Object> createChat(@RequestBody IdList idList) {
     return chatService.addChat(idList.getParticipants());

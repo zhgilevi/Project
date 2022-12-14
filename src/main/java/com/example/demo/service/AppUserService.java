@@ -8,7 +8,6 @@ import com.example.demo.util.CustomStatus;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.LoginRequest;
 import com.example.demo.util.LoginResponse;
-import com.example.demo.util.SignUpRequest;
 import com.example.demo.util.UpdateRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
