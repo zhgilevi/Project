@@ -1,0 +1,62 @@
+<div class="d-flex flex-row justify-content-center">
+  <div class="card my-5 w-75">
+    <div class="card-body">
+      <h1 class="h3 mb-3 fw-normal">Change your Account info</h1>
+      <form
+        (ngSubmit)="handleChangeInfo()"
+        #userForm="ngForm"
+        autocomplete="off"
+      >
+        <div class="form-group">
+          <label for="name">Username</label>
+          <input
+            type="text"
+            [(ngModel)]="user.username"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="{{ placeholder.username }}"
+            #fname="ngModel"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">First Name</label>
+          <input
+            type="text"
+            [(ngModel)]="user.fname"
+            class="form-control"
+            id="fname"
+            name="fname"
+            placeholder="{{ placeholder.fname }}"
+            #fname="ngModel"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Last Name</label>
+          <input
+            type="text"
+            [(ngModel)]="user.lname"
+            class="form-control"
+            id="lname"
+            name="lname"
+            placeholder="{{ placeholder.lname }}"
+            #lname="ngModel"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Password</label>
+          <input
+            type="text"
+            [(ngModel)]="user.password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="{{ placeholder.password }}"
+            #password="ngModel"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
